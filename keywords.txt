@@ -7,11 +7,31 @@
 #######################################
 
 LcdScreen	KEYWORD1
+Arduino_ILI9163	KEYWORD1
+PImage	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
+Color565	KEYWORD2
+background	KEYWORD2
+fill	KEYWORD2
+noFill	KEYWORD2
+stroke	KEYWORD2
+noStroke	KEYWORD2
+text	KEYWORD2
+textSize	KEYWORD2
+circle	KEYWORD2
+point	KEYWORD2
+quad	KEYWORD2
+rect	KEYWORD2
+triangle	KEYWORD2
+loadImage	KEYWORD2
+image	KEYWORD2
+
+draw	KEYWORD2
+isValid	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
