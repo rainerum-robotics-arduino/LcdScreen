@@ -40,7 +40,127 @@ LcdScreen::LcdScreen(uint8_t CS, uint8_t RS, uint8_t RST)
 { }
 
 void LcdScreen::begin() {
-//initR(INITR_REDTAB);
   initG();
   setRotation(1);
+}
+
+// Arduino TFT library compatibility.
+
+void LcdScreen::background(uint8_t red, uint8_t green, uint8_t blue) {
+  background(Color565(red, green, blue));
+}
+
+void LcdScreen::background(color c) {
+  fillScreen(c);
+}
+
+void LcdScreen::stroke(uint8_t red, uint8_t green, uint8_t blue) {
+  stroke(Color565(red, green, blue));
+}
+
+void LcdScreen::stroke(color c) {
+  useStroke = true;
+  strokeColor = c;
+  setTextColor(c);
+}
+
+void LcdScreen::noStroke() {
+  useStroke = false;
+}
+
+void LcdScreen::noFill() {
+  useFill = false;
+}
+
+void LcdScreen::fill(uint8_t red, uint8_t green, uint8_t blue) {
+  fill(Color565(red, green, blue));
+}
+
+void LcdScreen::fill(color c) {
+  useFill = true;
+  fillColor = c;
+}
+
+void LcdScreen::point(int16_t x, int16_t y) {
+	if (!useStroke)
+		return;
+
+	drawPixel(x, y, strokeColor);
+}
+
+void LcdScreen::text(const char * text, int16_t x, int16_t y) {
+	if (!useStroke)
+		return;
+
+	setTextWrap(false);
+	setTextColor(strokeColor);
+	setCursor(x, y);
+	print(text);
+}
+
+void LcdScreen::textSize(uint8_t size) {
+	setTextSize(size);
+}
+
+void LcdScreen::line(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
+	if (!useStroke)
+		return;
+
+	if (x1 == x2) {
+		if (y1 < y2)
+			drawFastVLine(x1, y1, y2 - y1, strokeColor);
+		else
+			drawFastVLine(x1, y2, y1 - y2, strokeColor);
+	}
+	else if (y1 == y2) {
+		if (x1 < x2)
+			drawFastHLine(x1, y1, x2 - x1, strokeColor);
+		else
+			drawFastHLine(x2, y1, x1 - x2, strokeColor);
+	}
+	else {
+		drawLine(x1, y1, x2, y2, strokeColor);
+	}
+}
+
+void LcdScreen::rect(int16_t x, int16_t y, int16_t width, int16_t height) {
+	if (useFill) {
+		fillRect(x, y, width, height, fillColor);
+	}
+	if (useStroke) {
+		drawRect(x, y, width, height, strokeColor);
+	}
+}
+
+void LcdScreen::rect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t radius) {
+	if (radius == 0) {
+		rect(x, y, width, height);
+	}
+	if (useFill) {
+		fillRoundRect(x, y, width, height, radius, fillColor);
+	}
+	if (useStroke) {
+		drawRoundRect(x, y, width, height, radius, strokeColor);
+	}
+}
+
+void LcdScreen::circle(int16_t x, int16_t y, int16_t r) {
+	if (r == 0)
+		return;
+
+	if (useFill) {
+		fillCircle(x, y, r, fillColor);
+	}
+	if (useStroke) {
+		drawCircle(x, y, r, strokeColor);
+	}
+}
+
+void LcdScreen::triangle(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t x3, int16_t y3) {
+	if (useFill) {
+		fillTriangle(x1, y1, x2, y2, x3, y3, fillColor);
+	}
+	if (useStroke) {
+		drawTriangle(x1, y1, x2, y2, x3, y3, strokeColor);
+	}
 }

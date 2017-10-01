@@ -72,6 +72,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  #warning "The SD library was not found. loadImage() and image() won't be supported."
 #endif
 
+typedef uint16_t color;
+
 /// The Arduino LCD is a ILI9163-based device.
 /// By default, it is mounted horizontally.
 /// LcdScreen class follows the convention of other
@@ -89,6 +91,52 @@ public:
 
   void image(PImage & img, uint16_t x, uint16_t y);
 #endif
+
+  // Arduino TFT library compatibility.
+  void
+      // http://processing.org/reference/background_.html
+      background(uint8_t red, uint8_t green, uint8_t blue),
+      background(color c),
+
+	  // http://processing.org/reference/fill_.html
+	  fill(uint8_t red, uint8_t green, uint8_t blue),
+	  fill(color c),
+
+	  // http://processing.org/reference/noFill_.html
+	  noFill(),
+
+	  // http://processing.org/reference/stroke_.html
+	  stroke(uint8_t red, uint8_t green, uint8_t blue),
+	  stroke(color c),
+
+	  // http://processing.org/reference/noStroke_.html
+	  noStroke(),
+
+	  // https://processing.org/reference/text_.html
+	  text(const char * text, int16_t x, int16_t y),
+
+	  // https://processing.org/reference/textSize_.html
+	  textSize(uint8_t size),
+
+	  // similar to ellipse() in Processing, but with
+	  // a single radius.
+	  // http://processing.org/reference/ellipse_.html
+	  circle(int16_t x, int16_t y, int16_t r),
+	  point(int16_t x, int16_t y),
+	  line(int16_t x1, int16_t y1, int16_t x2, int16_t y2),
+	  quad(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t x3, int16_t y3, int16_t x4, int16_t y4),
+	  rect(int16_t x, int16_t y, int16_t width, int16_t height),
+	  rect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t radius),
+	  triangle(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t x3, int16_t y3);
+	  ;
+protected:
+  /*
+   * Processing-style graphics state
+   */
+  color strokeColor = 0x0000;
+  bool useStroke = false;
+  color fillColor = 0x0000;
+  bool useFill = false;
 };
 
 /// Esplora boards have hard-wired connections with
