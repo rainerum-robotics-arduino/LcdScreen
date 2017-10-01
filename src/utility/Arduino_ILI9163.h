@@ -1,14 +1,8 @@
 /***************************************************
-  This is a library for the Adafruit 1.8" SPI display.
+  This is a library for the Arduino 1.8" SPI display.
 
-This library works with the Adafruit 1.8" TFT Breakout w/SD card
-  ----> http://www.adafruit.com/products/358
-The 1.8" TFT shield
-  ----> https://www.adafruit.com/product/802
-The 1.44" TFT breakout
-  ----> https://www.adafruit.com/product/2088
-as well as Adafruit raw 1.8" TFT display
-  ----> http://www.adafruit.com/products/618
+This library works with the Arduino 1.8" TFT Breakout w/SD card
+  ----> https://store.arduino.cc/arduino-lcd-screen
 
   Check out the links above for our tutorials and wiring diagrams
   These displays use SPI to communicate, 4 or 5 pins are required to
@@ -21,11 +15,11 @@ as well as Adafruit raw 1.8" TFT display
   MIT license, all text above must be included in any redistribution
  ****************************************************/
 
-#ifndef _ADAFRUIT_ST7735H_
-#define _ADAFRUIT_ST7735H_
+#ifndef _ARDUINO_ILI9163H_
+#define _ARDUINO_ILI9163H_
 
-#include "Arduino.h"
-#include "Print.h"
+#include <Arduino.h>
+#include <Print.h>
 #include <Adafruit_GFX.h>
 
 #if defined(__AVR__) || defined(CORE_TEENSY)
@@ -50,93 +44,81 @@ as well as Adafruit raw 1.8" TFT display
   typedef unsigned char prog_uchar;
 #endif
 
-// some flags for initR() :(
-#define INITR_GREENTAB   0x0
-#define INITR_REDTAB     0x1
-#define INITR_BLACKTAB   0x2
 
-#define INITR_18GREENTAB    INITR_GREENTAB
-#define INITR_18REDTAB      INITR_REDTAB
-#define INITR_18BLACKTAB    INITR_BLACKTAB
-#define INITR_144GREENTAB   0x1
-#define INITR_MINI160x80    0x4
+  // for 1.44 and mini
+#define ILI9163_TFTWIDTH_128  128
+  // for mini
+#define ILI9163_TFTWIDTH_80   80
+  // for 1.44" display
+#define ILI9163_TFTHEIGHT_128 128
+  // for 1.8" and mini display
+#define ILI9163_TFTHEIGHT_160 160
 
+#define ILI9163_NOP     0x00
+#define ILI9163_SWRESET 0x01
+#define ILI9163_RDDID   0x04
+#define ILI9163_RDDST   0x09
 
-// for 1.44 and mini
-#define ST7735_TFTWIDTH_128  128
-// for mini
-#define ST7735_TFTWIDTH_80   80
-// for 1.44" display
-#define ST7735_TFTHEIGHT_128 128
-// for 1.8" and mini display
-#define ST7735_TFTHEIGHT_160  160
+#define ILI9163_SLPIN   0x10
+#define ILI9163_SLPOUT  0x11
+#define ILI9163_PTLON   0x12
+#define ILI9163_NORON   0x13
 
-#define ST7735_NOP     0x00
-#define ST7735_SWRESET 0x01
-#define ST7735_RDDID   0x04
-#define ST7735_RDDST   0x09
+#define ILI9163_INVOFF  0x20
+#define ILI9163_INVON   0x21
+#define ILI9163_DISPOFF 0x28
+#define ILI9163_DISPON  0x29
+#define ILI9163_CASET   0x2A
+#define ILI9163_RASET   0x2B
+#define ILI9163_RAMWR   0x2C
+#define ILI9163_RAMRD   0x2E
 
-#define ST7735_SLPIN   0x10
-#define ST7735_SLPOUT  0x11
-#define ST7735_PTLON   0x12
-#define ST7735_NORON   0x13
+#define ILI9163_PTLAR   0x30
+#define ILI9163_COLMOD  0x3A
+#define ILI9163_MADCTL  0x36
 
-#define ST7735_INVOFF  0x20
-#define ST7735_INVON   0x21
-#define ST7735_DISPOFF 0x28
-#define ST7735_DISPON  0x29
-#define ST7735_CASET   0x2A
-#define ST7735_RASET   0x2B
-#define ST7735_RAMWR   0x2C
-#define ST7735_RAMRD   0x2E
+#define ILI9163_FRMCTR1 0xB1
+#define ILI9163_FRMCTR2 0xB2
+#define ILI9163_FRMCTR3 0xB3
+#define ILI9163_INVCTR  0xB4
+#define ILI9163_DISSET5 0xB6
 
-#define ST7735_PTLAR   0x30
-#define ST7735_COLMOD  0x3A
-#define ST7735_MADCTL  0x36
+#define ILI9163_PWCTR1  0xC0
+#define ILI9163_PWCTR2  0xC1
+#define ILI9163_PWCTR3  0xC2
+#define ILI9163_PWCTR4  0xC3
+#define ILI9163_PWCTR5  0xC4
+#define ILI9163_VMCTR1  0xC5
 
-#define ST7735_FRMCTR1 0xB1
-#define ST7735_FRMCTR2 0xB2
-#define ST7735_FRMCTR3 0xB3
-#define ST7735_INVCTR  0xB4
-#define ST7735_DISSET5 0xB6
+#define ILI9163_RDID1   0xDA
+#define ILI9163_RDID2   0xDB
+#define ILI9163_RDID3   0xDC
+#define ILI9163_RDID4   0xDD
 
-#define ST7735_PWCTR1  0xC0
-#define ST7735_PWCTR2  0xC1
-#define ST7735_PWCTR3  0xC2
-#define ST7735_PWCTR4  0xC3
-#define ST7735_PWCTR5  0xC4
-#define ST7735_VMCTR1  0xC5
+#define ILI9163_PWCTR6  0xFC
 
-#define ST7735_RDID1   0xDA
-#define ST7735_RDID2   0xDB
-#define ST7735_RDID3   0xDC
-#define ST7735_RDID4   0xDD
-
-#define ST7735_PWCTR6  0xFC
-
-#define ST7735_GMCTRP1 0xE0
-#define ST7735_GMCTRN1 0xE1
+#define ILI9163_GMCTRP1 0xE0
+#define ILI9163_GMCTRN1 0xE1
 
 // Color definitions
-#define	ST7735_BLACK   0x0000
-#define	ST7735_BLUE    0x001F
-#define	ST7735_RED     0xF800
-#define	ST7735_GREEN   0x07E0
-#define ST7735_CYAN    0x07FF
-#define ST7735_MAGENTA 0xF81F
-#define ST7735_YELLOW  0xFFE0
-#define ST7735_WHITE   0xFFFF
+#define	ILI9163_BLACK   0x0000
+#define	ILI9163_BLUE    0x001F
+#define	ILI9163_RED     0xF800
+#define	ILI9163_GREEN   0x07E0
+#define ILI9163_CYAN    0x07FF
+#define ILI9163_MAGENTA 0xF81F
+#define ILI9163_YELLOW  0xFFE0
+#define ILI9163_WHITE   0xFFFF
 
 
-class Adafruit_ST7735 : public Adafruit_GFX {
+class Arduino_ILI9163 : public Adafruit_GFX {
 
  public:
 
-  Adafruit_ST7735(int8_t CS, int8_t RS, int8_t SID, int8_t SCLK, int8_t RST = -1);
-  Adafruit_ST7735(int8_t CS, int8_t RS, int8_t RST = -1);
+  Arduino_ILI9163(int8_t CS, int8_t RS, int8_t SID, int8_t SCLK, int8_t RST = -1);
+  Arduino_ILI9163(int8_t CS, int8_t RS, int8_t RST = -1);
 
-  void     initB(void),                             // for ST7735B displays
-           initR(uint8_t options = INITR_GREENTAB), // for ST7735R
+  void     initG(void),                             // for ILI9163C displays
            setAddrWindow(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1),
            pushColor(uint16_t color),
            fillScreen(uint16_t color),
@@ -158,8 +140,6 @@ class Adafruit_ST7735 : public Adafruit_GFX {
   */
 
  private:
-  uint8_t  tabcolor;
-
   void     spiwrite(uint8_t),
            writecommand(uint8_t c),
            writedata(uint8_t d),
@@ -191,4 +171,4 @@ class Adafruit_ST7735 : public Adafruit_GFX {
 };
 
 
-#endif
+#endif // _ARDUINO_ILI9163H_
