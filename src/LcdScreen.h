@@ -150,7 +150,7 @@ extern LcdScreen EsploraTFT;
 #define BUFFPIXEL 20
 
 void LcdScreen::image(PImage & img, uint16_t x, uint16_t y) {
-  int      w, h, row, col;
+  int      w, h, wb, hb, row, col;
   uint8_t  r, g, b;
   uint32_t pos = 0;
   uint8_t  sdbuffer[3*BUFFPIXEL]; // pixel buffer (R+G+B per pixel)
@@ -159,8 +159,10 @@ void LcdScreen::image(PImage & img, uint16_t x, uint16_t y) {
   // Crop area to be loaded
   w = img._bmpWidth;
   h = img._bmpHeight;
-  if((x+w-1) >= width())  w = width()  - x;
-  if((y+h-1) >= height()) h = height() - y;
+  wb = x + w - 1;
+  hb = y + h - 1;
+  if(wb >= width())  w = width()  - x;
+  if(hb >= height()) h = height() - y;
 
   //// Set TFT address window to clipped image bounds
   //setAddrWindow(x, y, x+w-1, y+h-1);
@@ -234,7 +236,7 @@ PImage PImage::loadImage(const char * fileName) {
 
 
   // Open requested file on SD card
-  if ((bmpFile = SD.open(fileName)) == NULL) {
+  if ((bmpFile = SD.open(fileName)) == false) {
     Serial.print(F("loadImage: file not found: "));
     Serial.println(fileName);
     return PImage(); // load error

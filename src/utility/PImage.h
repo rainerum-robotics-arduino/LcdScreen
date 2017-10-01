@@ -15,10 +15,10 @@ class LcdScreen;
 /// @author Enrico Gueli <enrico.gueli@gmail.com>
 class PImage {
 public:
-  PImage() : 
-    _valid(false), 
+  PImage() :  
     _bmpWidth(0), 
-    _bmpHeight(0) { }
+    _bmpHeight(0),
+    _valid(false) { }
   
   void draw(Adafruit_GFX & glcd, int16_t x, int16_t y);
   
