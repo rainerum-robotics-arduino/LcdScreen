@@ -278,7 +278,7 @@ void Arduino_ILI9163::commonInit(const uint8_t *cmdList) {
 
 
 // Initialization for ILI9163C screens
-void LcdScreen::initG(void) {
+void Arduino_ILI9163::initG(void) {
   commonInit(Gcmd);
 }
 

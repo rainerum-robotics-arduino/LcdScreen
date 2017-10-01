@@ -4,6 +4,7 @@
 #define _PIMAGE_H
 
 class Adafruit_GFX;
+class LcdScreen;
 
 #if defined(__SD_H__)  // Arduino SD library
 
@@ -31,7 +32,7 @@ public:
   int height() { return _bmpHeight; }
   
 private:
-  friend class Adafruit_GFX;
+  friend class LcdScreen;
   
   File _bmpFile;
   int  _bmpWidth, _bmpHeight;   // W+H in pixels
