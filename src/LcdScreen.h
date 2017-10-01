@@ -233,12 +233,16 @@ PImage PImage::loadImage(const char * fileName) {
   uint32_t bmpImageoffset;        // Start of image data in file
   uint32_t rowSize;               // Not always = bmpWidth; may have padding
   bool     flip    = true;        // BMP is stored bottom-to-top
+  uint32_t bmpFilesize;
+  uint32_t bmpHeadersize;
 
 
   // Open requested file on SD card
   if ((bmpFile = SD.open(fileName)) == false) {
+#if defined(LCD_SCREEN_DEBUG)
     Serial.print(F("loadImage: file not found: "));
     Serial.println(fileName);
+#endif
     return PImage(); // load error
   }
   
@@ -246,34 +250,48 @@ PImage PImage::loadImage(const char * fileName) {
   
   // Parse BMP header
   if(read16(bmpFile) != 0x4D42) { // BMP signature
+#if defined(LCD_SCREEN_DEBUG)
     Serial.println(F("loadImage: file doesn't look like a BMP"));
+#endif
     return PImage();
   }
   
-  Serial.print(F("File size: ")); Serial.println(read32(bmpFile));
+  bmpFilesize = read32(bmpFile);
   (void)read32(bmpFile); // Read & ignore creator bytes
   bmpImageoffset = read32(bmpFile); // Start of image data
-  Serial.print(F("Image Offset: ")); Serial.println(bmpImageoffset, DEC);
   // Read DIB header
-  Serial.print(F("Header size: ")); Serial.println(read32(bmpFile));
-  bmpWidth  = read32(bmpFile);
+  bmpHeadersize = read32(bmpFile); 
+  bmpWidth = read32(bmpFile);
   bmpHeight = read32(bmpFile);
+#if defined(LCD_SCREEN_DEBUG)
+  Serial.print(F("File size: ")); Serial.println(bmpFilesize);
+  Serial.print(F("Image Offset: ")); Serial.println(bmpImageoffset, DEC);
+  Serial.print(F("Header size: ")); Serial.println(bmpHeadersize);
+#endif
   if(read16(bmpFile) != 1) { // # planes -- must be '1'
+#if defined(LCD_SCREEN_DEBUG)
     Serial.println(F("loadImage: invalid n. of planes"));
+#endif
     return PImage();
   }
   
   bmpDepth = read16(bmpFile); // bits per pixel
+#if defined(LCD_SCREEN_DEBUG)
   Serial.print(F("Bit Depth: ")); Serial.println(bmpDepth);
+#endif
   if((bmpDepth != 24) || (read32(bmpFile) != 0)) { // 0 = uncompressed {
+#if defined(LCD_SCREEN_DEBUG)
     Serial.println(F("loadImage: invalid pixel format"));
+#endif
     return PImage();
   }
 
+#if defined(LCD_SCREEN_DEBUG)
   Serial.print(F("Image size: "));
   Serial.print(bmpWidth);
   Serial.print('x');
   Serial.println(bmpHeight);
+#endif
 
   // BMP rows are padded (if needed) to 4-byte boundary
   rowSize = (bmpWidth * 3 + 3) & ~3;
