@@ -233,9 +233,10 @@ PImage PImage::loadImage(const char * fileName) {
   uint32_t bmpImageoffset;        // Start of image data in file
   uint32_t rowSize;               // Not always = bmpWidth; may have padding
   bool     flip    = true;        // BMP is stored bottom-to-top
+#if defined(LCD_SCREEN_DEBUG)
   uint32_t bmpFilesize;
   uint32_t bmpHeadersize;
-
+#endif
 
   // Open requested file on SD card
   if ((bmpFile = SD.open(fileName)) == false) {
