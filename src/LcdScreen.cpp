@@ -50,6 +50,51 @@ void LcdScreen::begin() {
 #endif
 }
 
+// Arduino Robot library compatibility.
+void LcdScreen::debugPrint(long value, uint8_t x, uint8_t y) {
+	static long oldVal = 0;
+	stroke(backgroundColor);
+	text(oldVal, x, y);
+	stroke(strokeColor);
+	text(value, x, y);
+	oldVal = value;
+}
+
+void LcdScreen::clearScreen() {
+  background(backgroundColor);
+}
+
+void drawCompassBase(LcdScreen* lcd, color strokeColor) {
+  lcd->drawCircle(64, 80, 50, strokeColor);
+  lcd->drawLine(64, 30, 64, 20, strokeColor);
+}
+
+void drawCompassDire(LcdScreen* lcd, int16_t dire, color backgroundColor) {
+  static uint8_t x_old;
+  static uint8_t y_old;
+  static uint8_t x_t_old;
+  static uint8_t y_t_old;
+  
+  uint8_t x = 60 * sin(dire / 360.0*6.28) + 64;
+  uint8_t x_t = 40 * sin(dire / 360.0*6.28) + 64;
+  uint8_t y = 60 * cos(dire / 360.0*6.28) + 80;
+  uint8_t y_t = 40 * cos(dire / 360.0*6.28) + 80;
+  
+  lcd->drawLine(x_t_old, y_t_old, x_old, y_old, backgroundColor);
+  lcd->drawLine(x_t, y_t, x, y, ILI9163_RED);
+  
+  x_old = x;
+  y_old = y;
+  x_t_old = x_t;
+  y_t_old = y_t;
+}
+
+void LcdScreen::drawCompass(uint16_t value) {
+	drawCompassBase(this, strokeColor);
+	drawCompassDire(this, value, backgroundColor);
+	debugPrint(value, 57, 76);
+}
+
 // Arduino TFT library compatibility.
 
 void LcdScreen::background(uint8_t red, uint8_t green, uint8_t blue) {
@@ -57,6 +102,7 @@ void LcdScreen::background(uint8_t red, uint8_t green, uint8_t blue) {
 }
 
 void LcdScreen::background(color c) {
+  backgroundColor = c;
   fillScreen(c);
 }
 
@@ -88,85 +134,114 @@ void LcdScreen::fill(color c) {
 }
 
 void LcdScreen::point(int16_t x, int16_t y) {
-	if (!useStroke)
-		return;
+  if (!useStroke)
+    return;
 
-	drawPixel(x, y, strokeColor);
+  drawPixel(x, y, strokeColor);
+}
+
+void LcdScreen::text(char value, uint8_t x, uint8_t y) {
+  if (!useStroke)
+  return;
+
+  setTextWrap(false);
+  setTextColor(strokeColor);
+  setCursor(x, y);
+  print(value);
+}
+
+void LcdScreen::text(int value, uint8_t x, uint8_t y) {
+  if (!useStroke)
+    return;
+
+  setTextWrap(false);
+  setTextColor(strokeColor);
+  setCursor(x, y);
+  print(value);
+}
+void LcdScreen::text(long value, uint8_t x, uint8_t y) {
+  if (!useStroke)
+    return;
+
+  setTextWrap(false);
+  setTextColor(strokeColor);
+  setCursor(x, y);
+  print(value);
 }
 
 void LcdScreen::text(const char * text, int16_t x, int16_t y) {
-	if (!useStroke)
-		return;
+  if (!useStroke)
+    return;
 
-	setTextWrap(false);
-	setTextColor(strokeColor);
-	setCursor(x, y);
-	print(text);
+  setTextWrap(false);
+  setTextColor(strokeColor);
+  setCursor(x, y);
+  print(text);
 }
 
 void LcdScreen::textSize(uint8_t size) {
-	setTextSize(size);
+  setTextSize(size);
 }
 
 void LcdScreen::line(int16_t x1, int16_t y1, int16_t x2, int16_t y2) {
-	if (!useStroke)
-		return;
+  if (!useStroke)
+    return;
 
-	if (x1 == x2) {
-		if (y1 < y2)
-			drawFastVLine(x1, y1, y2 - y1, strokeColor);
-		else
-			drawFastVLine(x1, y2, y1 - y2, strokeColor);
-	}
-	else if (y1 == y2) {
-		if (x1 < x2)
-			drawFastHLine(x1, y1, x2 - x1, strokeColor);
-		else
-			drawFastHLine(x2, y1, x1 - x2, strokeColor);
-	}
-	else {
-		drawLine(x1, y1, x2, y2, strokeColor);
-	}
+  if (x1 == x2) {
+    if (y1 < y2)
+      drawFastVLine(x1, y1, y2 - y1, strokeColor);
+    else
+      drawFastVLine(x1, y2, y1 - y2, strokeColor);
+  }
+  else if (y1 == y2) {
+    if (x1 < x2)
+      drawFastHLine(x1, y1, x2 - x1, strokeColor);
+    else
+      drawFastHLine(x2, y1, x1 - x2, strokeColor);
+  }
+  else {
+    drawLine(x1, y1, x2, y2, strokeColor);
+  }
 }
 
 void LcdScreen::rect(int16_t x, int16_t y, int16_t width, int16_t height) {
-	if (useFill) {
-		fillRect(x, y, width, height, fillColor);
-	}
-	if (useStroke) {
-		drawRect(x, y, width, height, strokeColor);
-	}
+  if (useFill) {
+    fillRect(x, y, width, height, fillColor);
+  }
+  if (useStroke) {
+    drawRect(x, y, width, height, strokeColor);
+  }
 }
 
 void LcdScreen::rect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t radius) {
-	if (radius == 0) {
-		rect(x, y, width, height);
-	}
-	if (useFill) {
-		fillRoundRect(x, y, width, height, radius, fillColor);
-	}
-	if (useStroke) {
-		drawRoundRect(x, y, width, height, radius, strokeColor);
-	}
+  if (radius == 0) {
+    rect(x, y, width, height);
+  }
+  if (useFill) {
+    fillRoundRect(x, y, width, height, radius, fillColor);
+  }
+  if (useStroke) {
+    drawRoundRect(x, y, width, height, radius, strokeColor);
+  }
 }
 
 void LcdScreen::circle(int16_t x, int16_t y, int16_t r) {
-	if (r == 0)
-		return;
+  if (r == 0)
+    return;
 
-	if (useFill) {
-		fillCircle(x, y, r, fillColor);
-	}
-	if (useStroke) {
-		drawCircle(x, y, r, strokeColor);
-	}
+  if (useFill) {
+    fillCircle(x, y, r, fillColor);
+  }
+  if (useStroke) {
+    drawCircle(x, y, r, strokeColor);
+  }
 }
 
 void LcdScreen::triangle(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t x3, int16_t y3) {
-	if (useFill) {
-		fillTriangle(x1, y1, x2, y2, x3, y3, fillColor);
-	}
-	if (useStroke) {
-		drawTriangle(x1, y1, x2, y2, x3, y3, strokeColor);
-	}
+  if (useFill) {
+    fillTriangle(x1, y1, x2, y2, x3, y3, fillColor);
+  }
+  if (useStroke) {
+    drawTriangle(x1, y1, x2, y2, x3, y3, strokeColor);
+  }
 }

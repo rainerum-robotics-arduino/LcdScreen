@@ -22,7 +22,13 @@ SD card, and needs to be included in all sketches.
 See also:
 * [Adafruit GFX Graphics Library](https://learn.adafruit.com/adafruit-gfx-graphics-library)
 
-Processing subset:
+Arduino Robot LCD library subset:
+* [debugPrint()](https://www.arduino.cc/en/Reference/RobotDebugPrint)
+* [clearScreen()](https://www.arduino.cc/en/Reference/RobotClearScreen)
+* [drawCompass()](https://www.arduino.cc/en/Reference/RobotDrawCompass)
+* [drawBMP()](https://www.arduino.cc/en/Reference/RobotDrawBMP)
+
+Processing library subset:
 * [PImage](https://processing.org/reference/PImage.html)
 * [loadImage()](https://processing.org/reference/loadImage_.html)
 * [image()](https://processing.org/reference/image_.html)

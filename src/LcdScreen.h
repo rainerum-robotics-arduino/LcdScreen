@@ -69,7 +69,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #if defined(__SD_H__)  // Arduino SD library
  #include "utility/PImage.h"
 #else
- #warning "The SD library was not found. loadImage() and image() won't be supported."
+ #warning "The SD library was not found. loadImage() image() and drawBMP() won't be supported."
 #endif
 
 typedef uint16_t color;
@@ -88,9 +88,22 @@ public:
 
 #if defined(__SD_H__)  // Arduino SD library
   PImage loadImage(const char * fileName) { return PImage::loadImage(fileName); }
-
   void image(PImage & img, uint16_t x, uint16_t y);
+
+  // https://www.arduino.cc/en/Reference/RobotDrawBMP
+  void drawBMP(const char* filename, uint8_t x, uint8_t y);
 #endif
+
+  // Arduino Robot library compatibility.
+  void
+	  // https://www.arduino.cc/en/Reference/RobotDebugPrint
+	  debugPrint(long value, uint8_t x = 0, uint8_t y = 0),
+
+	  // https://www.arduino.cc/en/Reference/RobotClearScreen
+	  clearScreen(),
+
+	  // https://www.arduino.cc/en/Reference/RobotDrawCompass
+	  drawCompass(uint16_t value);
 
   // Arduino TFT library compatibility.
   void
@@ -114,12 +127,14 @@ public:
 
 	  // https://processing.org/reference/text_.html
 	  text(const char * text, int16_t x, int16_t y),
+	  text(char value, uint8_t x, uint8_t y),
+	  text(int value, uint8_t x, uint8_t y),
+	  text(long value, uint8_t x, uint8_t y),
 
 	  // https://processing.org/reference/textSize_.html
 	  textSize(uint8_t size),
 
-	  // similar to ellipse() in Processing, but with
-	  // a single radius.
+	  // similar to ellipse() in Processing, but with a single radius.
 	  // http://processing.org/reference/ellipse_.html
 	  circle(int16_t x, int16_t y, int16_t r),
 	  point(int16_t x, int16_t y),
@@ -128,15 +143,16 @@ public:
 	  rect(int16_t x, int16_t y, int16_t width, int16_t height),
 	  rect(int16_t x, int16_t y, int16_t width, int16_t height, int16_t radius),
 	  triangle(int16_t x1, int16_t y1, int16_t x2, int16_t y2, int16_t x3, int16_t y3);
-	  ;
+
 protected:
   /*
    * Processing-style graphics state
    */
-  color strokeColor = 0x0000;
+  color strokeColor = ILI9163_BLACK;
   bool useStroke = false;
-  color fillColor = 0x0000;
+  color fillColor = ILI9163_BLACK;
   bool useFill = false;
+  color backgroundColor = ILI9163_WHITE;
 };
 
 /// Esplora boards have hard-wired connections with
@@ -203,7 +219,7 @@ void LcdScreen::image(PImage & img, uint16_t x, uint16_t y) {
       
     } // end pixel
   } // end scanline
-
+  img._bmpFile.close();
 }
 
 
@@ -317,6 +333,13 @@ PImage PImage::loadImage(const char * fileName) {
   }
   
   return PImage(bmpFile, bmpWidth, bmpHeight, bmpDepth, bmpImageoffset, rowSize, flip);
+}
+
+void LcdScreen::drawBMP(const char* filename, uint8_t x, uint8_t y) {
+  PImage bmp = loadImage(filename);
+  if (bmp.isValid()) {
+	  image(bmp, x, y);
+  }
 }
 
 #endif // __SD_H__
