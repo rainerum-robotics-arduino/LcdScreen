@@ -21,6 +21,7 @@ SD card, and needs to be included in all sketches.
 
 See also:
 * [Adafruit GFX Graphics Library](https://learn.adafruit.com/adafruit-gfx-graphics-library)
+
 Processing subset:
 * [PImage](https://processing.org/reference/PImage.html)
 * [loadImage()](https://processing.org/reference/loadImage_.html)
@@ -32,7 +33,7 @@ Processing subset:
 * [noStroke()](http://processing.org/reference/noStroke_.html)
 * [text()](https://processing.org/reference/text_.html)
 * [textSize()](https://processing.org/reference/textSize_.html)
-* circle()
+* circle() similar to [ellipse()](https://processing.org/reference/ellipse_.html) in Processing, but with a single radius.
 * [point()](https://processing.org/reference/point_.html)
 * [line()](https://processing.org/reference/line_.html)
 * [quad()](https://processing.org/reference/quad_.html)
