@@ -145,6 +145,10 @@ protected:
 extern LcdScreen EsploraTFT;
 #endif
 
+#if ARDUINO_AVR_ROBOT_CONTROL
+extern LcdScreen LottieLemonTFT;
+#endif
+
 #if defined(__SD_H__)  // Arduino SD library
 
 #define BUFFPIXEL 20

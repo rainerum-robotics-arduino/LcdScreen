@@ -35,6 +35,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 LcdScreen EsploraTFT(7, 0, 1);
 #endif
 
+#if ARDUINO_AVR_ROBOT_CONTROL
+LcdScreen LottieLemonTFT(LCD_CS, DC_LCD, RST_LCD);
+#endif
+
 LcdScreen::LcdScreen(uint8_t CS, uint8_t RS, uint8_t RST)
   : Arduino_ILI9163(CS, RS, RST)
 { }
