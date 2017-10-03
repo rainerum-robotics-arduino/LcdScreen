@@ -261,11 +261,19 @@ PImage PImage::loadImage(const char * fileName) {
     return PImage();
   }
   
+#if defined(LCD_SCREEN_DEBUG)
   bmpFilesize = read32(bmpFile);
+#else
+  (void)read32(bmpFile); // Read & ignore filesize bytes
+#endif
   (void)read32(bmpFile); // Read & ignore creator bytes
   bmpImageoffset = read32(bmpFile); // Start of image data
   // Read DIB header
-  bmpHeadersize = read32(bmpFile); 
+#if defined(LCD_SCREEN_DEBUG)
+  bmpHeadersize = read32(bmpFile);
+#else
+  (void)read32(bmpFile); // Read & ignore headersize bytes
+#endif
   bmpWidth = read32(bmpFile);
   bmpHeight = read32(bmpFile);
 #if defined(LCD_SCREEN_DEBUG)
