@@ -31,11 +31,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "LcdScreen.h"
 
-#if ARDUINO_AVR_ESPLORA
+#if defined(ARDUINO_AVR_ESPLORA)
 LcdScreen EsploraTFT(7, 0, 1);
 #endif
 
-#if ARDUINO_AVR_ROBOT_CONTROL
+#if defined(ARDUINO_AVR_ROBOT_CONTROL)
 LcdScreen LottieLemonTFT(LCD_CS, DC_LCD, RST_LCD);
 #endif
 
@@ -45,7 +45,9 @@ LcdScreen::LcdScreen(uint8_t CS, uint8_t RS, uint8_t RST)
 
 void LcdScreen::begin() {
   initG();
+#if !defined(ARDUINO_AVR_ROBOT_CONTROL)
   setRotation(1);
+#endif
 }
 
 // Arduino TFT library compatibility.

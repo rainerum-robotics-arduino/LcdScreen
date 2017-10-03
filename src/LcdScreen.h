@@ -141,11 +141,11 @@ protected:
 
 /// Esplora boards have hard-wired connections with
 /// the Arduino LCD if mounted on the onboard connector.
-#if ARDUINO_AVR_ESPLORA // are we building for Esplora?
+#if defined(ARDUINO_AVR_ESPLORA) // are we building for Esplora?
 extern LcdScreen EsploraTFT;
 #endif
 
-#if ARDUINO_AVR_ROBOT_CONTROL
+#if defined(ARDUINO_AVR_ROBOT_CONTROL)
 extern LcdScreen LottieLemonTFT;
 #endif
 
