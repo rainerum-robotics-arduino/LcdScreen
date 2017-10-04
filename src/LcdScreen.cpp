@@ -48,6 +48,9 @@ void LcdScreen::begin() {
 #if !defined(ARDUINO_AVR_ROBOT_CONTROL)
   setRotation(1);
 #endif
+  background(backgroundColor); // Without this backgroundColor is random pixels?
+  stroke(strokeColor); // Without this strokeColor is white?
+  //fill(fillColor); // Maybe not needed?
 }
 
 // Arduino Robot library compatibility.
